@@ -1,35 +1,55 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { addItem, removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  // Calculate total amount for all products in the cart
+  // Calculer le coût total de tous les articles dans le panier
   const calculateTotalAmount = () => {
- 
+    let total = 0;
+    cart.forEach(item => {
+      const cost = parseFloat(item.cost.substring(1)); // Extraire la valeur numérique du coût
+      total += cost * item.quantity;
+    });
+    return total.toFixed(2); // Retourne la somme totale formatée
   };
 
+  // Fonction pour continuer les achats
   const handleContinueShopping = (e) => {
-   
+    onContinueShopping(e);
   };
 
+  // Fonction pour ajouter un article au panier
+  const handleAddToCart = (item) => {
+    dispatch(addItem(item));
+  };
 
-
+  // Fonction pour augmenter la quantité d'un article
   const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Fonction pour diminuer la quantité d'un article
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item.name)); // Si la quantité est 1, on supprime l'article
+    }
   };
 
+  // Fonction pour supprimer un article du panier
   const handleRemove = (item) => {
+    dispatch(removeItem(item.name));
   };
 
-  // Calculate total cost based on quantity for an item
+  // Calculer le sous-total pour chaque article
   const calculateTotalCost = (item) => {
+    const cost = parseFloat(item.cost.substring(1)); // Extraire la valeur numérique du coût
+    return (cost * item.quantity).toFixed(2); // Calculer et formater le sous-total
   };
 
   return (
@@ -57,12 +77,10 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={() => alert('Functionality to be added for future reference')}>Checkout</button>
       </div>
     </div>
   );
 };
 
 export default CartItem;
-
-
