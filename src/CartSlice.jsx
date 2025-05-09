@@ -1,11 +1,13 @@
+// CartSlice.jsx
+
 import { createSlice } from '@reduxjs/toolkit';
 
 export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [],
-    totalItems: 0, // Compteur total des articles
-    totalPrice: 0, // Ajout du prix total
+    totalItems: 0,  // Compteur total des articles
+    totalPrice: 0,  // Ajout du prix total (en nombre, non formaté)
   },
   reducers: {
     // Ajouter un article au panier
@@ -22,8 +24,8 @@ export const CartSlice = createSlice({
       // Mettre à jour totalItems
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
 
-      // Mettre à jour totalPrice
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
+      // Mettre à jour totalPrice (en tant que nombre)
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
     },
 
     // Retirer un article du panier
@@ -35,7 +37,7 @@ export const CartSlice = createSlice({
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
 
       // Mettre à jour totalPrice
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
     },
 
     // Mettre à jour la quantité d'un article
@@ -51,13 +53,11 @@ export const CartSlice = createSlice({
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
 
       // Mettre à jour totalPrice
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
     },
   },
 });
 
-// Export des actions pour les utiliser dans ProductList.jsx et CartItem.jsx
 export const { addItem, removeItem, updateQuantity } = CartSlice.actions;
 
-// Export du reducer par défaut pour store.js
 export default CartSlice.reducer;

@@ -9,12 +9,10 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculer le coût total de tous les articles dans le panier
   const calculateTotalAmount = () => {
-    let total = 0;
-    cart.forEach(item => {
-      const cost = parseFloat(item.cost.substring(1)); // Extraire la valeur numérique du coût
-      total += cost * item.quantity;
-    });
-    return total.toFixed(2); // Retourne la somme totale formatée
+    return cart.reduce((total, item) => {
+      const cost = parseFloat(item.cost.replace('$', '')); // Extraire la valeur numérique du coût
+      return total + (cost * item.quantity);
+    }, 0).toFixed(2); // Retourner la somme totale formatée
   };
 
   // Fonction pour continuer les achats
@@ -48,7 +46,7 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculer le sous-total pour chaque article
   const calculateTotalCost = (item) => {
-    const cost = parseFloat(item.cost.substring(1)); // Extraire la valeur numérique du coût
+    const cost = parseFloat(item.cost.replace('$', '')); // Extraire la valeur numérique du coût
     return (cost * item.quantity).toFixed(2); // Calculer et formater le sous-total
   };
 

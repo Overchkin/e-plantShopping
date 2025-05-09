@@ -9,10 +9,9 @@ function ProductList({ onHomeClick }) {
     const [showPlants, setShowPlants] = useState(false);
 
     const cart = useSelector(state => state.cart.items);
+    const totalItems = useSelector(state => state.cart.totalItems); // Accès à totalItems depuis le store
+    const totalPrice = useSelector(state => state.cart.totalPrice); // Accès à totalPrice depuis le store
     const dispatch = useDispatch();
-
-    // Total d’articles dans le panier
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
     const plantsArray = [
         {
@@ -157,7 +156,7 @@ function ProductList({ onHomeClick }) {
                     ))}
                 </div>
             ) : (
-                <CartItem onContinueShopping={handleContinueShopping} cart={cart} />
+                <CartItem onContinueShopping={handleContinueShopping} cart={cart} totalPrice={totalPrice} />
             )}
         </div>
     );
