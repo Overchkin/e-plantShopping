@@ -4,16 +4,12 @@ import { addItem, removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
-  const cart = useSelector(state => state.cart.items);
+  const cart = useSelector(state => state.cart.items);  // Accéder aux items du panier
+  const totalPrice = useSelector(state => state.cart.totalPrice);  // Accéder au prix total
   const dispatch = useDispatch();
 
-  // Calculer le coût total de tous les articles dans le panier
-  const calculateTotalAmount = () => {
-    return cart.reduce((total, item) => {
-      const cost = parseFloat(item.cost.replace('$', '')); // Extraire la valeur numérique du coût
-      return total + (cost * item.quantity);
-    }, 0).toFixed(2); // Retourner la somme totale formatée
-  };
+  // Formatage du prix total pour l'affichage
+  const formattedTotalPrice = totalPrice.toFixed(2);  // Formater en deux décimales
 
   // Fonction pour continuer les achats
   const handleContinueShopping = (e) => {
@@ -52,7 +48,7 @@ const CartItem = ({ onContinueShopping }) => {
 
   return (
     <div className="cart-container">
-      <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
+      <h2 style={{ color: 'black' }}>Total Cart Amount: ${formattedTotalPrice}</h2>
       <div>
         {cart.map(item => (
           <div className="cart-item" key={item.name}>

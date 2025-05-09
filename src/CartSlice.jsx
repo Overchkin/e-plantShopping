@@ -1,13 +1,21 @@
-// CartSlice.jsx
-
 import { createSlice } from '@reduxjs/toolkit';
+
+// Fonction pour mettre à jour les totaux
+const updateTotals = (state) => {
+  state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+  state.totalPrice = state.items.reduce((total, item) => {
+    // Convertir le prix en nombre sans le '$'
+    const cost = parseFloat(item.cost.replace('$', ''));
+    return total + (cost * item.quantity);
+  }, 0);
+};
 
 export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [],
-    totalItems: 0,  // Compteur total des articles
-    totalPrice: 0,  // Ajout du prix total (en nombre, non formaté)
+    totalItems: 0,
+    totalPrice: 0,
   },
   reducers: {
     // Ajouter un article au panier
@@ -21,11 +29,7 @@ export const CartSlice = createSlice({
         state.items.push({ name, image, cost, quantity: 1 });
       }
 
-      // Mettre à jour totalItems
-      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-
-      // Mettre à jour totalPrice (en tant que nombre)
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
+      updateTotals(state);  // Mettre à jour les totaux
     },
 
     // Retirer un article du panier
@@ -33,11 +37,7 @@ export const CartSlice = createSlice({
       const itemName = action.payload;
       state.items = state.items.filter(item => item.name !== itemName);
 
-      // Mettre à jour totalItems
-      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-
-      // Mettre à jour totalPrice
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
+      updateTotals(state);  // Mettre à jour les totaux
     },
 
     // Mettre à jour la quantité d'un article
@@ -49,11 +49,7 @@ export const CartSlice = createSlice({
         itemToUpdate.quantity = quantity;
       }
 
-      // Mettre à jour totalItems
-      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-
-      // Mettre à jour totalPrice
-      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0);
+      updateTotals(state);  // Mettre à jour les totaux
     },
   },
 });
