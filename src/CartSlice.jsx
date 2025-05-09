@@ -4,9 +4,11 @@ export const CartSlice = createSlice({
   name: 'cart',
   initialState: {
     items: [],
-    totalItems: 0, // Ajouter un compteur pour le nombre total d'articles
+    totalItems: 0, // Compteur total des articles
+    totalPrice: 0, // Ajout du prix total
   },
   reducers: {
+    // Ajouter un article au panier
     addItem: (state, action) => {
       const { name, image, cost } = action.payload;
       const existingItem = state.items.find(item => item.name === name);
@@ -17,27 +19,39 @@ export const CartSlice = createSlice({
         state.items.push({ name, image, cost, quantity: 1 });
       }
 
-      // Mettre à jour le totalItems après chaque ajout
+      // Mettre à jour totalItems
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+
+      // Mettre à jour totalPrice
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
     },
 
+    // Retirer un article du panier
     removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.name !== action.payload);
+      const itemName = action.payload;
+      state.items = state.items.filter(item => item.name !== itemName);
 
-      // Mettre à jour le totalItems après la suppression
+      // Mettre à jour totalItems
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+
+      // Mettre à jour totalPrice
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
     },
 
+    // Mettre à jour la quantité d'un article
     updateQuantity: (state, action) => {
       const { name, quantity } = action.payload;
       const itemToUpdate = state.items.find(item => item.name === name);
-      
+
       if (itemToUpdate) {
         itemToUpdate.quantity = quantity;
       }
 
-      // Mettre à jour le totalItems après la mise à jour de la quantité
+      // Mettre à jour totalItems
       state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+
+      // Mettre à jour totalPrice
+      state.totalPrice = state.items.reduce((total, item) => total + (parseFloat(item.cost.replace('$', '')) * item.quantity), 0).toFixed(2);
     },
   },
 });
@@ -45,5 +59,5 @@ export const CartSlice = createSlice({
 // Export des actions pour les utiliser dans ProductList.jsx et CartItem.jsx
 export const { addItem, removeItem, updateQuantity } = CartSlice.actions;
 
-//  Export du reducer par défaut pour store.js
+// Export du reducer par défaut pour store.js
 export default CartSlice.reducer;
